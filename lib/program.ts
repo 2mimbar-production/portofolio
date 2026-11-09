@@ -40,12 +40,18 @@ export type Episode = {
 };
 
 export async function ambilSemuaProgram(): Promise<Program[]> {
-  const { data, error } = await createPublicClient().rpc("program_publik");
+  const supabase = createPublicClient();
+  // 5W2H dibaca langsung dari tabel karya (RLS: publik boleh baca karya terbit).
+  const [{ data, error }, { data: limaW }] = await Promise.all([
+    supabase.rpc("program_publik"),
+    supabase.from("karya").select("slug, apa, mengapa, siapa, bagaimana").eq("terbit", true),
+  ]);
   if (error) {
     console.error("Gagal memuat program:", error.message);
     return [];
   }
-  return ((data ?? []) as Program[]).sort(
+  const peta = new Map((limaW ?? []).map((k) => [k.slug as string, k]));
+  return ((data ?? []) as Program[]).map((p) => ({ ...p, ...peta.get(p.slug) })).sort(
     (a, b) =>
       a.urutan - b.urutan ||
       Number(b.unggulan) - Number(a.unggulan) ||
