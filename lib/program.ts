@@ -17,7 +17,8 @@ export type Program = {
   link_url: string | null;
   unggulan: boolean;
   urutan: number;
-  status: StatusProgram;
+  /** null = karya tanpa program terhubung (dianggap sudah tamat). */
+  status: StatusProgram | null;
   kanal: Kanal[] | null;
   jadwal_tayang: string | null;
   target_episode: number | null;
@@ -59,7 +60,7 @@ export async function ambilEpisode(slug: string): Promise<Episode[]> {
 
 /** Program masih berjalan (tayang rutin) atau sudah tamat. */
 export function labelStatus(p: Pick<Program, "status" | "jumlah_episode">) {
-  if (p.status === "selesai") return "Tamat";
+  if (!p.status || p.status === "selesai") return "Tamat";
   if (p.jumlah_episode > 0) return "Sedang tayang";
   return "Segera tayang";
 }

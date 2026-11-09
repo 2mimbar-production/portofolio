@@ -13,9 +13,10 @@ Urutan tampilannya:
 
 ## Cara program muncul di web
 
-1. Studio → **Portofolio**: buat karya untuk program itu (judul, kategori = genre,
-   ringkasan, deskripsi, cover, link trailer) lalu centang **Terbit**.
-2. Studio → **Proyek** → Ubah program: isi "Tampil di web portofolio program" dengan
+1. Studio → **Portofolio**: buat karya (judul, kategori = genre,
+   ringkasan, deskripsi, cover, link trailer) lalu centang **Terbit**. Karya terbit
+   langsung tampil di etalase.
+2. (Opsional) Studio → **Proyek** → Ubah program: isi "Tampil di web portofolio program" dengan
    karya tadi, serta kanal tayang, jadwal tayang, dan target episode.
 3. Studio → **Laporan**: episode berstatus **Sudah tayang** yang judulnya diisi
    otomatis masuk ke daftar episode dan galeri.
