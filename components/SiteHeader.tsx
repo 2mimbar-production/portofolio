@@ -8,9 +8,12 @@ export default function SiteHeader() {
           <img src="/logo-white.png" alt="" className="h-7 w-auto" />
           <span className="font-display text-lg tracking-wide">Duamimbar</span>
         </Link>
-        <nav className="flex items-center gap-5 text-xs uppercase tracking-[0.2em] text-white/70">
+        <nav className="flex items-center gap-4 text-[11px] sm:gap-5 sm:text-xs uppercase tracking-[0.2em] text-white/70">
           <Link href="/#genre" className="hover:text-gold-400">
             Genre
+          </Link>
+          <Link href="/#channel" className="hover:text-gold-400">
+            Channel
           </Link>
           <Link href="/#kontak" className="hover:text-gold-400">
             Kontak

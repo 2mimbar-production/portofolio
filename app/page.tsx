@@ -4,11 +4,13 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import GenreStrips from "@/components/GenreStrips";
 import Muncul from "@/components/Muncul";
+import ChannelSection from "@/components/ChannelSection";
+import { ambilInsight } from "@/lib/insight";
 
 export const revalidate = 60;
 
 export default async function BerandaPage() {
-  const program = await ambilSemuaProgram();
+  const [program, insight] = await Promise.all([ambilSemuaProgram(), ambilInsight()]);
   const genre = kelompokGenre(program);
 
   return (
@@ -32,6 +34,8 @@ export default async function BerandaPage() {
             )}
           </div>
         </section>
+
+        {insight && <ChannelSection insight={insight} />}
 
         {program.length > 0 && (
           <section className="pt-20">

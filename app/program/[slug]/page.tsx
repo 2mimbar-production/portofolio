@@ -20,8 +20,14 @@ import ProgramHero from "@/components/ProgramHero";
 import Galeri from "@/components/Galeri";
 import KanalLinks from "@/components/KanalLinks";
 import Muncul from "@/components/Muncul";
+import Statistik from "@/components/Statistik";
+import { ambilInsight, singkat } from "@/lib/insight";
 
 export const revalidate = 60;
+
+function kanalPlatform(kanal: { platform: string }[] | null) {
+  return (kanal ?? []).map((k) => k.platform).filter(Boolean);
+}
 
 async function ambilProgram(slug: string) {
   const semua = await ambilSemuaProgram();
@@ -43,7 +49,27 @@ export default async function ProgramPage({ params }: { params: { slug: string }
   const program = await ambilProgram(params.slug);
   if (!program) notFound();
 
-  const episode = await ambilEpisode(program.slug);
+  const [episode, insight] = await Promise.all([ambilEpisode(program.slug), ambilInsight()]);
+  const angka = insight?.program.find((p) => p.slug === program.slug) ?? null;
+  const platform = Array.from(new Set(kanalPlatform(program.kanal)));
+  const limaW = [
+    { kunci: "What", judul: "Tentang apa", isi: program.apa ?? program.ringkasan },
+    { kunci: "Why", judul: "Kenapa dibuat", isi: program.mengapa },
+    { kunci: "Who", judul: "Untuk & bersama siapa", isi: program.siapa },
+    { kunci: "When", judul: "Kapan tayang", isi: program.jadwal_tayang ?? (program.tahun ? `Sejak ${program.tahun}` : null) },
+    { kunci: "Where", judul: "Tayang di", isi: platform.length ? platform.join(", ") : null },
+    { kunci: "How", judul: "Formatnya", isi: program.bagaimana },
+    {
+      kunci: "How much",
+      judul: "Seberapa banyak",
+      isi:
+        angka?.episode || program.jumlah_episode
+          ? `${angka?.episode ?? program.jumlah_episode} episode${program.target_episode && program.target_episode < 500 ? ` dari target ${program.target_episode}` : ""}`
+          : program.target_episode && program.target_episode < 500
+            ? `Target ${program.target_episode} episode`
+            : null,
+    },
+  ].filter((x) => x.isi);
   const foto = galeriProgram(program, episode);
   const tonton = linkTonton(program, episode);
   const trailer = embedUrl(program.video_url);
@@ -82,6 +108,55 @@ export default async function ProgramPage({ params }: { params: { slug: string }
           <div className="mt-24">
             <Galeri foto={foto} judul={program.judul} />
           </div>
+        )}
+
+        {/* Insight angka dari YouTube (spreadsheet) */}
+        {angka && (
+          <section className="mt-24">
+            <p className="text-[11px] uppercase tracking-[0.3em] text-gold-400">Insight</p>
+            <h2 className="mt-2 font-display text-3xl">Performa program</h2>
+            <div className="mt-6">
+              <Statistik
+                data={[
+                  { label: "Total views", nilai: singkat(angka.total_views) },
+                  { label: "Rata-rata per episode", nilai: singkat(angka.rata_views) },
+                  { label: "Jam tonton", nilai: singkat(angka.jam_tonton) },
+                  { label: "Like", nilai: singkat(angka.like) },
+                ]}
+              />
+            </div>
+            {angka.top && (
+              <a
+                href={angka.top.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 flex items-center justify-between gap-4 rounded-2xl bg-ink-900 p-5 ring-1 ring-white/10 hover:ring-gold-400/40"
+              >
+                <span className="min-w-0">
+                  <span className="block text-[11px] uppercase tracking-[0.2em] text-white/50">Episode terpopuler</span>
+                  <span className="mt-1 block truncate text-white">{angka.top.judul}</span>
+                </span>
+                <span className="shrink-0 font-mono text-sm text-gold-400">{singkat(angka.top.views)} views</span>
+              </a>
+            )}
+          </section>
+        )}
+
+        {/* 5W2H */}
+        {limaW.length >= 3 && (
+          <section className="mt-24">
+            <p className="text-[11px] uppercase tracking-[0.3em] text-gold-400">5W2H</p>
+            <h2 className="mt-2 font-display text-3xl">Program ini dalam satu layar</h2>
+            <div className="mt-6 grid gap-px overflow-hidden rounded-2xl bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+              {limaW.map((w, i) => (
+                <Muncul key={w.kunci} jeda={i * 60} className="bg-ink-900 p-5">
+                  <p className="font-mono text-xs text-gold-400">{w.kunci}</p>
+                  <p className="mt-1 text-xs text-white/40">{w.judul}</p>
+                  <p className="mt-3 whitespace-pre-line text-white/90">{w.isi}</p>
+                </Muncul>
+              ))}
+            </div>
+          </section>
         )}
 
         {/* 3. Detail */}

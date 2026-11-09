@@ -8,7 +8,11 @@ const WARNA = ["from-denim-700", "from-gold-500", "from-ink-700", "from-denim-50
 /** Panel genre vertikal; panel yang disentuh/di-hover melebar. */
 export default function GenreStrips({ genre }: { genre: Genre[] }) {
   return (
-    <div className="flex h-[70vh] min-h-[420px] flex-col gap-2 md:h-[64vh] md:flex-row md:items-start md:gap-3">
+    <div
+      className={`flex flex-col gap-2 md:flex-row md:items-start md:gap-3 ${
+        genre.length <= 2 ? "h-[40vh] min-h-[260px]" : "h-[70vh] min-h-[420px] md:h-[64vh]"
+      }`}
+    >
       {genre.map((g, i) => (
         <Link
           key={g.slug}

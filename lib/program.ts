@@ -24,6 +24,11 @@ export type Program = {
   target_episode: number | null;
   jumlah_episode: number;
   episode_terakhir: string | null;
+  /** 5W2H (diisi di Studio). */
+  apa?: string | null;
+  mengapa?: string | null;
+  siapa?: string | null;
+  bagaimana?: string | null;
 };
 
 export type Episode = {
