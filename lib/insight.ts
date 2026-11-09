@@ -1,7 +1,9 @@
+import { createPublicClient } from "./supabase";
+
 /**
- * Insight channel & program dari spreadsheet (lewat Apps Script doGet).
- * INSIGHT_URL hanya ada di server (bukan NEXT_PUBLIC), berisi alamat web app
- * lengkap dengan ?kunci=..., jadi kuncinya tidak pernah sampai ke browser.
+ * Insight channel & program. Sumbernya spreadsheet "Insight Channel Duamimbar";
+ * Apps Script mengirim ringkasannya tiap hari ke tabel Supabase insight_web
+ * (lihat apps-script/), dan web membacanya dari sana.
  */
 
 export type LabelPersen = { label: string; persen: number | null };
@@ -39,18 +41,17 @@ export type InsightProgram = {
 export type Insight = { diperbarui: string; channel: Channel[]; program: InsightProgram[] };
 
 export async function ambilInsight(): Promise<Insight | null> {
-  const url = process.env.INSIGHT_URL;
-  if (!url) return null;
-  try {
-    const res = await fetch(url, { next: { revalidate: 3600 } });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-    return data as Insight;
-  } catch (e) {
-    console.error("Gagal memuat insight:", (e as Error).message);
+  const { data, error } = await createPublicClient()
+    .from("insight_web")
+    .select("data")
+    .eq("id", "terbaru")
+    .maybeSingle();
+  if (error) {
+    console.error("Gagal memuat insight:", error.message);
     return null;
   }
+  const isi = data?.data as Insight | undefined;
+  return isi && Array.isArray(isi.channel) ? isi : null;
 }
 
 /** 512000 -> "512 rb", 1250000 -> "1,3 jt". */

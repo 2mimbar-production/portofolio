@@ -1,52 +1,34 @@
-# Pasang insight channel (sekali saja, ±10 menit)
+# Pasang insight channel (sekali saja, ±5 menit)
 
-Spreadsheet: **Insight Channel Duamimbar** di Google Drive akun 2mimbar.production.
-Tab `Pengaturan` dan `Instagram` sudah terisi. Tab lain diisi otomatis oleh script.
+Alur: YouTube → spreadsheet **Insight Channel Duamimbar** (tiap hari ±05.00) →
+ringkasan dikirim ke tabel Supabase `insight_web` → tampil di etalase.
 
-## 1. Tempel script
+Kode siap-tempel (setelan & kunci sudah terisi) ada di Google Doc privat
+**"Pasang Insight Duamimbar (kode Apps Script) - RAHASIA"** di Drive akun 2mimbar.production.
+Langkah singkatnya juga ada di Doc itu:
+
 1. Buka spreadsheet → **Ekstensi → Apps Script**.
-2. Hapus isi `Code.gs`, tempel seluruh isi [`Kode.gs`](./Kode.gs), simpan.
-3. Klik ikon ⚙️ **Setelan proyek** → centang **Tampilkan file manifes "appsscript.json"**.
-4. Kembali ke Editor, buka `appsscript.json`, ganti isinya dengan [`appsscript.json`](./appsscript.json), simpan.
-   (Ini menyalakan layanan YouTube Data API & YouTube Analytics API.)
+2. ⚙️ Setelan proyek → centang **Tampilkan file manifes "appsscript.json"**.
+3. Tempel BAGIAN A ke `appsscript.json`, BAGIAN B ke `Code.gs`, simpan.
+4. Pilih fungsi `mulai` → **Jalankan** → izinkan. Saat ditanya akun/channel,
+   **pilih Budi Ashari Official** (supaya watch time & demografi bisa diambil).
+   "Google belum memverifikasi aplikasi ini" → Lanjutan → Buka (tidak aman).
 
-## 2. Izinkan & ambil data pertama
-1. Di editor, pilih fungsi `siapkanSheet` → **Jalankan**. Google minta izin:
-   - Pilih akun yang punya akses ke channel Budi Ashari Official.
-   - Kalau muncul pilihan channel/akun merek, **pilih Budi Ashari Official**
-     (supaya watch time & demografi bisa diambil).
-   - "Google belum memverifikasi aplikasi ini" → **Lanjutan → Buka (tidak aman)**. Ini script milikmu sendiri.
-2. Jalankan `perbaruiData`. Cek tab `channel`, `demografi`, `video_top`, `program` sudah terisi.
-   Kalau ada yang kosong, lihat tab `log`.
-3. Jalankan `pasangJadwal` → data diambil otomatis tiap hari jam ±05.00.
+`mulai` menyimpan setelan, menyiapkan tab, mengambil data pertama, mengirimnya ke web,
+dan menjadwalkan pengambilan harian. Kalau ada yang kosong, cek tab `log`.
 
-## 3. Sambungkan ke web
-1. **Terapkan → Deployment baru** → jenis **Aplikasi web**.
-   - Jalankan sebagai: **Saya**
-   - Yang memiliki akses: **Siapa saja**
-2. Salin **URL aplikasi web** (berakhiran `/exec`).
-3. Muat ulang spreadsheet → menu **Duamimbar → Lihat kunci web**, salin kuncinya.
-4. Alamat lengkap: `URL_exec?kunci=KUNCI`. Kirim ke Claude atau isi sendiri sebagai
-   env var `INSIGHT_URL` di Vercel project `2mimbar-portofolio`, lalu redeploy.
-
-Spreadsheet tetap privat. Alamat web app hanya mengembalikan ringkasan, dan tanpa
-kunci yang benar hanya membalas `kunci salah`.
+File di folder ini adalah versi tanpa rahasia: `Kode.gs` + `appsscript.json`, dan
+`Setelan.contoh.gs` (isi nilainya sendiri kalau memasang ulang; kunci ada di tabel
+Supabase `insight_kunci`, hanya bisa dilihat lewat SQL Editor).
 
 ## Instagram (manual, sebulan sekali)
 Di tab `Instagram`, tambah **baris baru** per akun tiap awal bulan (jangan timpa baris lama,
-supaya pertumbuhan terhitung):
-
-| tanggal | akun | nama | followers | reach_30_hari | interaksi_30_hari |
-|---|---|---|---|---|---|
-| 2026-11-01 | hikayatpodcast | Hikayat Podcast | 21000 | 63000 | 4200 |
-
-Angkanya dari Instagram → Profil → **Dasbor profesional / Insight** (30 hari terakhir).
-Akun yang kolom followers-nya kosong tidak ditampilkan.
+supaya pertumbuhan terhitung). Angkanya dari Instagram → Profil → **Dasbor profesional**
+(30 hari terakhir). Akun yang kolom followers-nya kosong tidak ditampilkan.
+Data baru ikut terkirim ke web pada pengambilan harian berikutnya.
 
 ## Menambah channel / program
 Tambah baris di tab `Pengaturan`:
 - `youtube_channel` + handle (`@nama`) atau ID channel (`UC...`) + slug bebas.
 - `youtube_playlist` + ID playlist (`PL...`) + slug = slug karya di Studio,
   supaya insight-nya muncul di halaman program itu.
-
-Kalau `Kode.gs` di repo ini berubah, tempel ulang lalu **Terapkan → Kelola deployment → Edit → Versi baru**.

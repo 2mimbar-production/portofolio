@@ -29,7 +29,8 @@ tayang, dll.) tidak pernah dikirim ke web ini.
 Angka YouTube & Instagram dibaca dari spreadsheet lewat Apps Script (`apps-script/`).
 Cara pasang: [`apps-script/PANDUAN.md`](apps-script/PANDUAN.md). Tampil di bagian
 **Channel** beranda, halaman `/channel/[slug]`, dan **Insight + 5W2H** di halaman program.
-Tanpa env `INSIGHT_URL`, bagian-bagian itu otomatis disembunyikan.
+Apps Script mengirim ringkasannya tiap hari ke tabel Supabase `insight_web`; selama tabel itu
+kosong, bagian-bagian tersebut otomatis disembunyikan.
 
 ## Setup
 

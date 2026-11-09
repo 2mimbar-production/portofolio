@@ -1,8 +1,11 @@
 /**
  * Insight channel & program Duamimbar.
  *
- * Alur: YouTube -> spreadsheet ini (tiap hari, fungsi perbaruiData)
- *       spreadsheet -> web etalase (fungsi doGet, dibaca Vercel tiap jam).
+ * Alur: YouTube -> spreadsheet (tiap hari, fungsi perbaruiData)
+ *       spreadsheet -> ringkasan -> Supabase (fungsi kirimKeWeb_) -> web etalase.
+ *
+ * Setelan (Script Properties, diisi lewat Setelan.gs):
+ *   SPREADSHEET_ID, SUPABASE_URL, SUPABASE_ANON_KEY, KUNCI_SUPABASE.
  *
  * Tab:
  *   Pengaturan  : daftar channel/playlist YouTube yang dipantau (diisi manusia).
@@ -14,7 +17,7 @@
  *   program     : insight per playlist program (ditulis script).
  *   log         : catatan error (ditulis script).
  *
- * Yang dikirim ke web hanya ringkasan di doGet, bukan seluruh spreadsheet.
+ * Yang dikirim ke web hanya ringkasan (fungsi ringkasan_), bukan seluruh spreadsheet.
  */
 
 const TAB = {
@@ -43,6 +46,21 @@ const KOLOM = {
 
 /* ───────────────────────── Menu & persiapan ───────────────────────── */
 
+/** Spreadsheet tujuan: dari setelan SPREADSHEET_ID, atau spreadsheet tempat script ini menempel. */
+function ss_() {
+  const id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+  return id ? SpreadsheetApp.openById(id) : SpreadsheetApp.getActive();
+}
+
+function info_(pesan) {
+  Logger.log(pesan);
+  try {
+    ss_().toast(pesan);
+  } catch (e) {
+    // Script mandiri (tidak menempel di spreadsheet) tidak punya toast.
+  }
+}
+
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('Duamimbar')
@@ -55,7 +73,7 @@ function onOpen() {
 
 /** Buat tab yang belum ada beserta judul kolomnya. Aman dijalankan ulang. */
 function siapkanSheet() {
-  const ss = SpreadsheetApp.getActive();
+  const ss = ss_();
   Object.keys(KOLOM).forEach((nama) => {
     let sh = ss.getSheetByName(nama);
     if (!sh) sh = ss.insertSheet(nama);
@@ -65,7 +83,7 @@ function siapkanSheet() {
     }
   });
   kunciWeb_();
-  SpreadsheetApp.getActive().toast('Tab siap. Isi tab Pengaturan & Instagram, lalu jalankan "Ambil data sekarang".');
+  info_('Tab siap.');
 }
 
 /** Jalankan perbaruiData tiap hari sekitar jam 05.00 WIB. */
@@ -74,7 +92,7 @@ function pasangJadwal() {
     .filter((t) => t.getHandlerFunction() === 'perbaruiData')
     .forEach((t) => ScriptApp.deleteTrigger(t));
   ScriptApp.newTrigger('perbaruiData').timeBased().everyDays(1).atHour(5).create();
-  SpreadsheetApp.getActive().toast('Terjadwal: data diambil otomatis tiap hari sekitar jam 05.00.');
+  info_('Terjadwal: data diambil otomatis tiap hari sekitar jam 05.00.');
 }
 
 /** Kunci acak supaya hanya web etalase yang bisa membaca ringkasan. */
@@ -125,6 +143,28 @@ function perbaruiData() {
   tulisUlang_(TAB.videoTop, hasil.video_top);
   tulisUlang_(TAB.program, hasil.program);
   tambahHarian_(hasil.harian, hariIni);
+  kirimKeWeb_();
+}
+
+/** Kirim ringkasan ke Supabase (tabel insight_web) supaya tampil di etalase. */
+function kirimKeWeb_() {
+  const p = PropertiesService.getScriptProperties();
+  const url = p.getProperty('SUPABASE_URL');
+  const anon = p.getProperty('SUPABASE_ANON_KEY');
+  const kunci = p.getProperty('KUNCI_SUPABASE');
+  if (!url || !anon || !kunci) {
+    catatLog_('kirim ke web', 'Setelan Supabase belum diisi (jalankan mulai di Setelan.gs).');
+    return;
+  }
+  const res = UrlFetchApp.fetch(url + '/rest/v1/rpc/simpan_insight', {
+    method: 'post',
+    contentType: 'application/json',
+    headers: { apikey: anon, Authorization: 'Bearer ' + anon },
+    payload: JSON.stringify({ p_kunci: kunci, p_data: ringkasan_() }),
+    muteHttpExceptions: true,
+  });
+  if (res.getResponseCode() >= 300) catatLog_('kirim ke web', res.getResponseCode() + ' ' + res.getContentText());
+  else info_('Ringkasan terkirim ke web.');
 }
 
 function ambilChannel_(r, hasil, hariIni) {
@@ -272,13 +312,18 @@ function ambilPlaylist_(r) {
 /* ───────────────────────── Sajikan ke web ───────────────────────── */
 
 /**
- * Dipanggil web etalase: GET .../exec?kunci=XXXX
- * Hanya mengirim ringkasan yang layak dilihat sponsor.
+ * Opsional: ringkasan juga bisa dibaca lewat web app (GET .../exec?kunci=XXXX).
+ * Jalur utama tetap kirimKeWeb_ ke Supabase.
  */
 function doGet(e) {
   if (!e || !e.parameter || e.parameter.kunci !== kunciWeb_()) {
     return json_({ error: 'kunci salah' });
   }
+  return json_(ringkasan_());
+}
+
+/** Ringkasan yang layak dilihat sponsor. */
+function ringkasan_() {
   const channel = bacaTab_(TAB.channel);
   const harian = bacaTab_(TAB.harian);
   const demografi = bacaTab_(TAB.demografi);
@@ -337,13 +382,13 @@ function doGet(e) {
     top: p.top_url ? { judul: p.top_judul, url: p.top_url, views: angka_(p.top_views) } : null,
   }));
 
-  return json_({ diperbarui: new Date().toISOString(), channel: youtube.concat(instagram), program });
+  return { diperbarui: new Date().toISOString(), channel: youtube.concat(instagram), program };
 }
 
 /* ───────────────────────── Bantuan ───────────────────────── */
 
 function bacaTab_(nama) {
-  const sh = SpreadsheetApp.getActive().getSheetByName(nama);
+  const sh = ss_().getSheetByName(nama);
   if (!sh || sh.getLastRow() < 2) return [];
   const [kepala, ...isi] = sh.getDataRange().getValues();
   return isi
@@ -352,7 +397,7 @@ function bacaTab_(nama) {
 }
 
 function tulisUlang_(nama, baris) {
-  const sh = SpreadsheetApp.getActive().getSheetByName(nama);
+  const sh = ss_().getSheetByName(nama);
   if (!sh) return;
   const kolom = KOLOM[nama];
   if (sh.getLastRow() > 1) sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).clearContent();
@@ -361,7 +406,7 @@ function tulisUlang_(nama, baris) {
 
 /** Satu baris per channel per hari; ambil ulang di hari yang sama menimpa baris hari itu. */
 function tambahHarian_(baris, hariIni) {
-  const sh = SpreadsheetApp.getActive().getSheetByName(TAB.harian);
+  const sh = ss_().getSheetByName(TAB.harian);
   if (!sh || !baris.length) return;
   const data = sh.getDataRange().getValues();
   for (let i = data.length - 1; i >= 1; i--) {
@@ -371,7 +416,7 @@ function tambahHarian_(baris, hariIni) {
 }
 
 function catatLog_(bagian, e) {
-  const sh = SpreadsheetApp.getActive().getSheetByName(TAB.log);
+  const sh = ss_().getSheetByName(TAB.log);
   if (sh) sh.appendRow([new Date(), bagian, String(e && e.message ? e.message : e)]);
 }
 
