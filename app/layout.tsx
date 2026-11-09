@@ -9,14 +9,14 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Program Duamimbar",
+  title: "Etalase Program Duamimbar",
   description: "Portofolio program media Duamimbar: podcast, video, dan konten yang tayang rutin.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id">
-      <body className={`${inter.variable} font-sans bg-surface text-denim-900 antialiased`}>{children}</body>
+      <body className={`${inter.variable} min-h-screen bg-ink-950 font-sans text-white antialiased`}>{children}</body>
     </html>
   );
 }

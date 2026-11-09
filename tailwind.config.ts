@@ -19,6 +19,13 @@ const config: Config = {
           400: "#D9A566",
           500: "#C68F4A",
         },
+        // Latar gelap etalase: biru tinta dari warna logo, digelapkan
+        ink: {
+          950: "#070A17",
+          900: "#0C1124",
+          800: "#141B36",
+          700: "#222B4D",
+        },
         surface: "#F6F8FA",
         muted: "#6B7A8D",
       },

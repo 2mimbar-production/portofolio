@@ -1,85 +1,72 @@
 import Link from "next/link";
-import { ambilSemuaProgram } from "@/lib/program";
+import { ambilSemuaProgram, coverProgram, kelompokGenre, labelStatus } from "@/lib/program";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
-import ProgramCard from "@/components/ProgramCard";
-import ProgramGallery from "@/components/ProgramGallery";
+import GenreStrips from "@/components/GenreStrips";
+import Muncul from "@/components/Muncul";
 
 export const revalidate = 60;
 
 export default async function BerandaPage() {
   const program = await ambilSemuaProgram();
-  const unggulan = program.filter((p) => p.unggulan).slice(0, 2);
-  const totalEpisode = program.reduce((n, p) => n + p.jumlah_episode, 0);
-  const totalKanal = new Set(program.flatMap((p) => (p.kanal ?? []).map((k) => `${k.platform}|${k.nama}`))).size;
-
-  const angka = [
-    { nilai: program.length, label: "program" },
-    { nilai: totalEpisode, label: "episode tayang" },
-    { nilai: totalKanal, label: "kanal" },
-  ].filter((a) => a.nilai > 0);
+  const genre = kelompokGenre(program);
 
   return (
     <>
-      <section className="relative h-[88vh] min-h-[520px] overflow-hidden bg-denim-900">
-        <SiteHeader overlay />
-        {/* Background div, bukan <img>: Safari iPad tidak selalu meregangkan
-            <img> absolute setinggi section, jadi gambarnya terpotong. */}
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-cover bg-center opacity-60"
-          style={{ backgroundImage: "url(/hero-duamimbar.jpg)" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-denim-900 via-denim-900/30 to-denim-900/50" />
-        <div className="relative mx-auto flex h-full max-w-6xl flex-col justify-end px-5 pb-16 sm:px-8 sm:pb-24">
-          <p className="text-xs uppercase tracking-[0.25em] text-gold-400">Portofolio Program</p>
-          <h1 className="mt-3 max-w-3xl font-display text-4xl leading-tight text-white sm:text-6xl">
-            Program media Duamimbar yang tayang rutin.
+      <SiteHeader />
+      <main className="mx-auto max-w-7xl px-4 sm:px-8">
+        <section id="genre" className="scroll-mt-4 pt-6 sm:pt-10">
+          <p className="text-[11px] uppercase tracking-[0.3em] text-gold-400">Etalase program</p>
+          <h1 className="mt-2 max-w-2xl font-display text-3xl leading-tight sm:text-5xl">
+            Yang sedang Duamimbar kerjakan.
           </h1>
-          {angka.length > 0 && (
-            <dl className="mt-8 flex flex-wrap gap-x-10 gap-y-4">
-              {angka.map((a) => (
-                <div key={a.label}>
-                  <dt className="sr-only">{a.label}</dt>
-                  <dd className="font-mono text-3xl font-semibold text-white">{a.nilai}</dd>
-                  <dd className="text-xs uppercase tracking-[0.15em] text-white/60">{a.label}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
-          <Link
-            href="#program"
-            className="mt-8 w-fit rounded-full bg-white px-5 py-2.5 text-sm font-medium text-denim-900 hover:bg-gold-400"
-          >
-            Lihat program
-          </Link>
-        </div>
-      </section>
+          <p className="mt-3 text-sm text-white/50">Pilih genre untuk melihat programnya.</p>
 
-      <main className="mx-auto max-w-6xl px-5 sm:px-8">
-        {unggulan.length > 0 && (
+          <div className="mt-8">
+            {genre.length ? (
+              <GenreStrips genre={genre} />
+            ) : (
+              <p className="rounded-2xl border border-dashed border-white/15 py-24 text-center text-sm text-white/50">
+                Etalase program sedang disiapkan.
+              </p>
+            )}
+          </div>
+        </section>
+
+        {program.length > 0 && (
           <section className="pt-20">
-            <h2 className="mb-6 text-xs uppercase tracking-[0.2em] text-muted">Program unggulan</h2>
-            <div className="grid gap-8 md:grid-cols-2">
-              {unggulan.map((p) => (
-                <ProgramCard key={p.slug} program={p} besar />
-              ))}
+            <h2 className="mb-5 text-[11px] uppercase tracking-[0.3em] text-white/50">Semua program</h2>
+            <div className="-mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4 pb-4 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-5">
+              {program.map((p, i) => {
+                const cover = coverProgram(p);
+                return (
+                  <Muncul key={p.slug} jeda={i * 60} className="w-40 shrink-0 snap-start sm:w-auto">
+                    <Link href={`/program/${p.slug}`} className="group block">
+                      <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-ink-800">
+                        {cover ? (
+                          <img
+                            src={cover}
+                            alt=""
+                            loading="lazy"
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="h-full w-full bg-gradient-to-b from-denim-700 to-ink-900" />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-ink-950/90 to-transparent" />
+                        <p className="absolute inset-x-0 bottom-0 p-3 font-display text-sm leading-snug">{p.judul}</p>
+                      </div>
+                      <p className="mt-2 text-xs text-white/50">
+                        {p.kategori} · {labelStatus(p)}
+                      </p>
+                    </Link>
+                  </Muncul>
+                );
+              })}
             </div>
           </section>
         )}
-
-        <section id="program" className="scroll-mt-8 pt-20">
-          <h2 className="mb-6 font-display text-3xl text-denim-900">Semua program</h2>
-          {program.length ? (
-            <ProgramGallery program={program} />
-          ) : (
-            <p className="rounded-2xl border border-dashed border-denim-100 py-16 text-center text-sm text-muted">
-              Portofolio program sedang disiapkan.
-            </p>
-          )}
-        </section>
       </main>
-
       <SiteFooter />
     </>
   );

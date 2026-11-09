@@ -106,3 +106,44 @@ export function thumbnailYoutube(url: string | null) {
 export function coverProgram(p: Pick<Program, "cover_url" | "video_url">) {
   return p.cover_url ?? thumbnailYoutube(p.video_url);
 }
+
+export function slugify(teks: string) {
+  return teks
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export type Genre = { slug: string; nama: string; program: Program[]; cover: string | null };
+
+/** Kelompokkan program per genre (kategori karya), urut dari yang programnya terbanyak. */
+export function kelompokGenre(program: Program[]): Genre[] {
+  const peta = new Map<string, Genre>();
+  for (const p of program) {
+    const slug = slugify(p.kategori) || "lainnya";
+    const g = peta.get(slug) ?? { slug, nama: p.kategori, program: [], cover: null };
+    g.program.push(p);
+    g.cover ??= coverProgram(p);
+    peta.set(slug, g);
+  }
+  return Array.from(peta.values()).sort((a, b) => b.program.length - a.program.length);
+}
+
+/** Foto galeri: cover program lalu thumbnail episode yang punya link YouTube. */
+export function galeriProgram(p: Pick<Program, "cover_url" | "video_url">, episode: Episode[], maks = 7) {
+  const semua = [coverProgram(p), ...episode.map((e) => thumbnailYoutube(e.link_tayang))];
+  return Array.from(new Set(semua.filter((x): x is string => Boolean(x)))).slice(0, maks);
+}
+
+/** Link utama tombol "Tonton": trailer, episode terbaru, lalu kanal pertama. */
+export function linkTonton(p: Pick<Program, "video_url" | "link_url" | "kanal">, episode: Episode[] = []) {
+  return (
+    p.video_url ??
+    episode.find((e) => e.link_tayang)?.link_tayang ??
+    (p.kanal ?? []).find((k) => k.link)?.link ??
+    p.link_url ??
+    null
+  );
+}

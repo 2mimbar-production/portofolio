@@ -1,18 +1,18 @@
 import Link from "next/link";
 
-export default function SiteHeader({ overlay = false }: { overlay?: boolean }) {
-  const tone = overlay ? "text-white" : "text-denim-900";
+export default function SiteHeader() {
   return (
-    <header className={`${overlay ? "absolute" : "relative border-b border-denim-100 bg-white"} inset-x-0 top-0 z-20`}>
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
-        <Link href="/" className={`font-display text-lg ${tone}`}>
-          Duamimbar <span className="font-sans font-normal opacity-60">Program</span>
+    <header className="relative z-20">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-8">
+        <Link href="/" className="flex items-center gap-2.5 text-white">
+          <img src="/logo-white.png" alt="" className="h-7 w-auto" />
+          <span className="font-display text-lg tracking-wide">Duamimbar</span>
         </Link>
-        <nav className={`flex items-center gap-5 text-sm ${tone}`}>
-          <Link href="/#program" className="hover:opacity-70">
-            Program
+        <nav className="flex items-center gap-5 text-xs uppercase tracking-[0.2em] text-white/70">
+          <Link href="/#genre" className="hover:text-gold-400">
+            Genre
           </Link>
-          <Link href="/#kontak" className="hover:opacity-70">
+          <Link href="/#kontak" className="hover:text-gold-400">
             Kontak
           </Link>
         </nav>
