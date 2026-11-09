@@ -24,6 +24,13 @@ Urutan tampilannya:
 Program berstatus *batal* tidak tampil. Catatan internal (kendala, PIC, bukti
 tayang, dll.) tidak pernah dikirim ke web ini.
 
+## Insight channel & program
+
+Angka YouTube & Instagram dibaca dari spreadsheet lewat Apps Script (`apps-script/`).
+Cara pasang: [`apps-script/PANDUAN.md`](apps-script/PANDUAN.md). Tampil di bagian
+**Channel** beranda, halaman `/channel/[slug]`, dan **Insight + 5W2H** di halaman program.
+Tanpa env `INSIGHT_URL`, bagian-bagian itu otomatis disembunyikan.
+
 ## Setup
 
 1. Supabase → SQL Editor: jalankan `supabase/migrations/20261109000000_program_publik.sql`
