@@ -227,6 +227,22 @@ export default async function ProgramPage({ params }: { params: { slug: string }
           </section>
         )}
 
+        {/* Kru / credit */}
+        {(program.kru ?? []).length > 0 && (
+          <section className="mt-16">
+            <p className="text-[11px] uppercase tracking-[0.3em] text-gold-400">Di balik layar</p>
+            <h2 className="mt-2 font-display text-3xl">Kru</h2>
+            <dl className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
+              {(program.kru ?? []).map((k, i) => (
+                <Muncul key={`${k.nama}-${i}`} jeda={i * 40} className="border-l-2 border-gold-400/60 pl-4">
+                  <dt className="text-xs uppercase tracking-[0.15em] text-white/50">{k.peran || "Kru"}</dt>
+                  <dd className="mt-1 font-display text-lg text-white">{k.nama}</dd>
+                </Muncul>
+              ))}
+            </dl>
+          </section>
+        )}
+
         {/* 4. Link ke program */}
         {kanal.some((k) => k.link) && (
           <section className="mt-16">

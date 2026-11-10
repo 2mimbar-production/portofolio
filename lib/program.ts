@@ -29,6 +29,9 @@ export type Program = {
   mengapa?: string | null;
   siapa?: string | null;
   bagaimana?: string | null;
+  /** Diisi di Studio; null = otomatis dari data program. */
+  status_tayang?: "berjalan" | "segera" | "tamat" | null;
+  kru?: { nama: string; peran: string }[];
 };
 
 export type Episode = {
@@ -44,7 +47,10 @@ export async function ambilSemuaProgram(): Promise<Program[]> {
   // 5W2H dibaca langsung dari tabel karya (RLS: publik boleh baca karya terbit).
   const [{ data, error }, { data: limaW }] = await Promise.all([
     supabase.rpc("program_publik"),
-    supabase.from("karya").select("slug, apa, mengapa, siapa, bagaimana").eq("terbit", true),
+    supabase
+      .from("karya")
+      .select("slug, apa, mengapa, siapa, bagaimana, status_tayang, kru")
+      .eq("terbit", true),
   ]);
   if (error) {
     console.error("Gagal memuat program:", error.message);
@@ -54,6 +60,7 @@ export async function ambilSemuaProgram(): Promise<Program[]> {
   return ((data ?? []) as Program[]).map((p) => ({ ...p, ...peta.get(p.slug) })).sort(
     (a, b) =>
       a.urutan - b.urutan ||
+      Number(sedangBerjalan(b)) - Number(sedangBerjalan(a)) ||
       Number(b.unggulan) - Number(a.unggulan) ||
       (b.episode_terakhir ?? "").localeCompare(a.episode_terakhir ?? "") ||
       a.judul.localeCompare(b.judul)
@@ -69,11 +76,18 @@ export async function ambilEpisode(slug: string): Promise<Episode[]> {
   return (data ?? []) as Episode[];
 }
 
-/** Program masih berjalan (tayang rutin) atau sudah tamat. */
-export function labelStatus(p: Pick<Program, "status" | "jumlah_episode">) {
+/** Label status di etalase. Pilihan di Studio menang; kalau kosong, ditebak dari data program. */
+export function labelStatus(p: Pick<Program, "status" | "jumlah_episode" | "status_tayang">) {
+  if (p.status_tayang === "berjalan") return "Sedang berjalan";
+  if (p.status_tayang === "segera") return "Segera tayang";
+  if (p.status_tayang === "tamat") return "Tamat";
   if (!p.status || p.status === "selesai") return "Tamat";
-  if (p.jumlah_episode > 0) return "Sedang tayang";
+  if (p.jumlah_episode > 0) return "Sedang berjalan";
   return "Segera tayang";
+}
+
+export function sedangBerjalan(p: Pick<Program, "status" | "jumlah_episode" | "status_tayang">) {
+  return labelStatus(p) === "Sedang berjalan";
 }
 
 export function formatTanggal(iso: string | null, opsi: Intl.DateTimeFormatOptions = {}) {

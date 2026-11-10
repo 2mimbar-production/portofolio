@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ambilSemuaProgram, coverProgram, kelompokGenre, labelStatus } from "@/lib/program";
+import { ambilSemuaProgram, coverProgram, kelompokGenre, labelStatus, linkTonton, sedangBerjalan } from "@/lib/program";
+import ProgramHero from "@/components/ProgramHero";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import GenreStrips from "@/components/GenreStrips";
@@ -12,6 +13,7 @@ export const revalidate = 60;
 export default async function BerandaPage() {
   const [program, insight] = await Promise.all([ambilSemuaProgram(), ambilInsight()]);
   const genre = kelompokGenre(program);
+  const berjalan = program.filter(sedangBerjalan);
 
   return (
     <>
@@ -34,6 +36,26 @@ export default async function BerandaPage() {
             )}
           </div>
         </section>
+
+        {berjalan.length > 0 && (
+          <section id="berjalan" className="scroll-mt-4 pt-20">
+            <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-gold-400">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold-400 opacity-60 motion-reduce:animate-none" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-gold-400" />
+              </span>
+              On going
+            </p>
+            <h2 className="mt-2 font-display text-3xl sm:text-4xl">Sedang berjalan</h2>
+            <div className={`mt-8 grid gap-6 ${berjalan.length > 1 ? "lg:grid-cols-2" : ""}`}>
+              {berjalan.map((p) => (
+                <Muncul key={p.slug}>
+                  <ProgramHero program={p} href={`/program/${p.slug}`} tonton={linkTonton(p)} />
+                </Muncul>
+              ))}
+            </div>
+          </section>
+        )}
 
         {insight && <ChannelSection insight={insight} />}
 

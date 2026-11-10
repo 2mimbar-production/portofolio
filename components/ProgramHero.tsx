@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight, Play } from "lucide-react";
-import { type Program, coverProgram, labelStatus } from "@/lib/program";
+import { type Program, coverProgram, labelStatus, sedangBerjalan } from "@/lib/program";
 
 /**
  * Kartu besar program: gambar lebar, judul di atasnya, tombol Tonton.
@@ -33,7 +33,7 @@ export default function ProgramHero({
       <div className="absolute inset-x-0 top-0 p-5 sm:p-8">
         <span
           className={`inline-block rounded-full px-2.5 py-1 text-[11px] font-medium ${
-            labelStatus(program) === "Sedang tayang" ? "bg-gold-400 text-ink-950" : "bg-white/15 text-white backdrop-blur"
+            sedangBerjalan(program) ? "bg-gold-400 text-ink-950" : "bg-white/15 text-white backdrop-blur"
           }`}
         >
           {labelStatus(program)}
