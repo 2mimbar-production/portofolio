@@ -11,7 +11,7 @@ import TrenChart from "@/components/TrenChart";
 import BarPersen from "@/components/BarPersen";
 import Muncul from "@/components/Muncul";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 async function ambilChannel(slug: string) {
   const insight = await ambilInsight();

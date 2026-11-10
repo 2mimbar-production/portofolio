@@ -9,6 +9,11 @@ export function createPublicClient() {
   return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { auth: { persistSession: false, autoRefreshToken: false } }
+    {
+      auth: { persistSession: false, autoRefreshToken: false },
+      // Next.js menyimpan hasil fetch; batasi supaya data Studio & insight
+      // terbaru muncul paling lambat semenit kemudian.
+      global: { fetch: (url, init) => fetch(url, { ...init, next: { revalidate: 60 } }) },
+    }
   );
 }
