@@ -30,15 +30,17 @@ export default function ProgramHero({
         <div className="absolute inset-0 bg-gradient-to-br from-denim-700 via-ink-800 to-ink-950" />
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/30 to-transparent" />
-      <div className="absolute inset-x-0 top-0 p-5 sm:p-8">
-        <span
-          className={`inline-block rounded-full px-2.5 py-1 text-[11px] font-medium ${
-            sedangBerjalan(program) ? "bg-gold-400 text-ink-950" : "bg-white/15 text-white backdrop-blur"
-          }`}
-        >
-          {labelStatus(program)}
-        </span>
-      </div>
+      {labelStatus(program) && (
+        <div className="absolute inset-x-0 top-0 p-5 sm:p-8">
+          <span
+            className={`inline-block rounded-full px-2.5 py-1 text-[11px] font-medium ${
+              sedangBerjalan(program) ? "bg-gold-400 text-ink-950" : "bg-white/15 text-white backdrop-blur"
+            }`}
+          >
+            {labelStatus(program)}
+          </span>
+        </div>
+      )}
       <div className={`absolute inset-x-0 bottom-0 p-5 sm:p-8 ${tonton ? "pb-20 sm:pb-8 sm:pr-40" : ""}`}>
         <p className="text-[11px] uppercase tracking-[0.25em] text-gold-400">{program.kategori}</p>
         <h2 className="mt-2 font-display text-3xl leading-tight text-white sm:text-5xl">{program.judul}</h2>

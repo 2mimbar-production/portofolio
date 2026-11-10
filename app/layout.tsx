@@ -8,8 +8,17 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const SITUS = process.env.NEXT_PUBLIC_SITE_URL || "https://2mimbar-portofolio.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITUS),
   title: "Etalase Program Duamimbar",
+  openGraph: {
+    type: "website",
+    siteName: "Duamimbar",
+    locale: "id_ID",
+    images: ["/hero-duamimbar.jpg"],
+  },
   description: "Portofolio program media Duamimbar: podcast, video, dan konten yang tayang rutin.",
 };
 

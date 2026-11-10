@@ -83,7 +83,7 @@ export default async function BerandaPage() {
                         <p className="absolute inset-x-0 bottom-0 p-3 font-display text-sm leading-snug">{p.judul}</p>
                       </div>
                       <p className="mt-2 text-xs text-white/50">
-                        {p.kategori} · {labelStatus(p)}
+                        {[p.kategori, labelStatus(p)].filter(Boolean).join(" · ")}
                       </p>
                     </Link>
                   </Muncul>

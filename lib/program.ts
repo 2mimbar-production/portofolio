@@ -76,12 +76,16 @@ export async function ambilEpisode(slug: string): Promise<Episode[]> {
   return (data ?? []) as Episode[];
 }
 
-/** Label status di etalase. Pilihan di Studio menang; kalau kosong, ditebak dari data program. */
+/**
+ * Label status di etalase. Pilihan di Studio menang; kalau kosong, ditebak dari
+ * data program yang terhubung. Tanpa keduanya, tidak ada label (null).
+ */
 export function labelStatus(p: Pick<Program, "status" | "jumlah_episode" | "status_tayang">) {
   if (p.status_tayang === "berjalan") return "Sedang berjalan";
   if (p.status_tayang === "segera") return "Segera tayang";
   if (p.status_tayang === "tamat") return "Tamat";
-  if (!p.status || p.status === "selesai") return "Tamat";
+  if (!p.status) return null;
+  if (p.status === "selesai") return "Tamat";
   if (p.jumlah_episode > 0) return "Sedang berjalan";
   return "Segera tayang";
 }
@@ -110,6 +114,9 @@ export function embedUrl(url: string | null) {
     if (host === "youtu.be") return `https://www.youtube.com/embed/${u.pathname.slice(1)}`;
     if (host.endsWith("youtube.com")) {
       if (u.pathname.startsWith("/embed/")) return url;
+      // Link playlist diputar sebagai rangkaian video.
+      const list = u.searchParams.get("list");
+      if (u.pathname.startsWith("/playlist") && list) return `https://www.youtube.com/embed/videoseries?list=${list}`;
       if (u.pathname.startsWith("/shorts/") || u.pathname.startsWith("/live/"))
         return `https://www.youtube.com/embed/${u.pathname.split("/")[2]}`;
       const v = u.searchParams.get("v");
@@ -126,7 +133,7 @@ export function embedUrl(url: string | null) {
 /** Thumbnail YouTube dari sebuah link, kalau ada. */
 export function thumbnailYoutube(url: string | null) {
   const m = embedUrl(url)?.match(/youtube\.com\/embed\/([\w-]+)/);
-  return m ? `https://i.ytimg.com/vi/${m[1]}/hqdefault.jpg` : null;
+  return m && m[1] !== "videoseries" ? `https://i.ytimg.com/vi/${m[1]}/hqdefault.jpg` : null;
 }
 
 export function coverProgram(p: Pick<Program, "cover_url" | "video_url">) {
@@ -172,4 +179,16 @@ export function linkTonton(p: Pick<Program, "video_url" | "link_url" | "kanal">,
     p.link_url ??
     null
   );
+}
+
+/** Pisahkan kru utama dan honorable mention ("Nama (Honorable Mention)"). */
+export function kelompokKru(kru: { nama: string; peran: string }[] = []) {
+  const pola = /\s*\(\s*hono?u?rable\s+mention\s*\)\s*/i;
+  const utama: typeof kru = [];
+  const hormat: typeof kru = [];
+  for (const k of kru) {
+    if (pola.test(k.nama)) hormat.push({ ...k, nama: k.nama.replace(pola, " ").trim() });
+    else utama.push(k);
+  }
+  return { utama, hormat };
 }

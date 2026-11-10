@@ -9,6 +9,7 @@ import {
   embedUrl,
   formatTanggal,
   galeriProgram,
+  kelompokKru,
   labelStatus,
   linkTonton,
   slugify,
@@ -75,6 +76,7 @@ export default async function ProgramPage({ params }: { params: { slug: string }
   const trailer = embedUrl(program.video_url);
   const kanal = program.kanal ?? [];
   const genreSlug = slugify(program.kategori) || "lainnya";
+  const kru = kelompokKru(program.kru);
 
   const info = [
     { label: "Genre", nilai: program.kategori },
@@ -228,18 +230,31 @@ export default async function ProgramPage({ params }: { params: { slug: string }
         )}
 
         {/* Kru / credit */}
-        {(program.kru ?? []).length > 0 && (
+        {kru.utama.length + kru.hormat.length > 0 && (
           <section className="mt-16">
             <p className="text-[11px] uppercase tracking-[0.3em] text-gold-400">Di balik layar</p>
             <h2 className="mt-2 font-display text-3xl">Kru</h2>
             <dl className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
-              {(program.kru ?? []).map((k, i) => (
+              {kru.utama.map((k, i) => (
                 <Muncul key={`${k.nama}-${i}`} jeda={i * 40} className="border-l-2 border-gold-400/60 pl-4">
                   <dt className="text-xs uppercase tracking-[0.15em] text-white/50">{k.peran || "Kru"}</dt>
                   <dd className="mt-1 font-display text-lg text-white">{k.nama}</dd>
                 </Muncul>
               ))}
             </dl>
+            {kru.hormat.length > 0 && (
+              <div className="mt-10">
+                <h3 className="text-[11px] uppercase tracking-[0.3em] text-white/50">Honorable mention</h3>
+                <dl className="mt-4 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {kru.hormat.map((k, i) => (
+                    <div key={`${k.nama}-${i}`} className="border-l-2 border-white/15 pl-4">
+                      <dt className="text-xs uppercase tracking-[0.15em] text-white/40">{k.peran || "Kru"}</dt>
+                      <dd className="mt-1 text-white/80">{k.nama}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            )}
           </section>
         )}
 

@@ -2,6 +2,7 @@
 // format 62xxx). Kalau kosong, barisnya tidak ditampilkan.
 const EMAIL = process.env.NEXT_PUBLIC_KONTAK_EMAIL;
 const WA = process.env.NEXT_PUBLIC_KONTAK_WA;
+const IG = process.env.NEXT_PUBLIC_KONTAK_IG || "media2mimbar";
 
 export default function SiteFooter() {
   return (
@@ -13,7 +14,7 @@ export default function SiteFooter() {
             Duamimbar memproduksi program podcast, video, dan konten media sosial yang tayang rutin.
           </p>
         </div>
-        {(EMAIL || WA) && (
+        {(EMAIL || WA || IG) && (
           <div className="text-sm sm:text-right">
             <p className="text-xs uppercase tracking-[0.2em] text-white/40">Hubungi kami</p>
             {EMAIL && (
@@ -24,6 +25,16 @@ export default function SiteFooter() {
             {WA && (
               <a href={`https://wa.me/${WA}`} className="mt-1 block text-white hover:text-gold-400">
                 WhatsApp +{WA}
+              </a>
+            )}
+            {IG && (
+              <a
+                href={`https://www.instagram.com/${IG}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1 block text-white hover:text-gold-400"
+              >
+                Instagram @{IG}
               </a>
             )}
           </div>
