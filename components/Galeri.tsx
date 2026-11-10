@@ -15,7 +15,7 @@ export default function Galeri({ foto, judul }: { foto: string[]; judul: string 
   if (foto.length < 2) return null;
   return (
     <section className="relative">
-      <h2 className="mb-6 text-center font-display text-4xl text-white md:pointer-events-none md:absolute md:inset-0 md:mb-0 md:flex md:items-center md:justify-center md:text-6xl">
+      <h2 className="mb-6 text-center font-display text-4xl text-navy md:pointer-events-none md:absolute md:inset-0 md:mb-0 md:flex md:items-center md:justify-center md:text-6xl">
         Galeri
       </h2>
       <div className="grid grid-cols-2 gap-3 md:relative md:block md:h-[80vh] md:min-h-[560px]">
@@ -29,7 +29,7 @@ export default function Galeri({ foto, judul }: { foto: string[]; judul: string 
               src={src}
               alt={`${judul}, foto ${i + 1}`}
               loading="lazy"
-              className="aspect-[4/3] w-full rounded-lg object-cover shadow-2xl shadow-black/50 transition duration-500 hover:scale-105"
+              className="aspect-[4/3] w-full rounded-lg object-cover shadow-2xl shadow-navy/20 transition duration-500 hover:scale-105"
             />
           </Muncul>
         ))}

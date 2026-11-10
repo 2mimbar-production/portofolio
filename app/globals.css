@@ -11,15 +11,15 @@
 }
 
 :focus-visible {
-  outline: 2px solid theme("colors.gold.500");
+  outline: 2px solid theme("colors.bata.DEFAULT");
   outline-offset: 2px;
 }
 
 /* Headline / sub-headline — tetap Inter, dibedain lewat bobot & tracking
    yang lebih tegas, bukan lewat typeface lain. */
 .font-display {
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 /* Data & angka (ID, nominal, timestamp) — tetap Inter, tapi angka jadi

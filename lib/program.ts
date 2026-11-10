@@ -183,7 +183,7 @@ export function linkTonton(p: Pick<Program, "video_url" | "link_url" | "kanal">,
 
 /** Pisahkan kru utama dan honorable mention ("Nama (Honorable Mention)"). */
 export function kelompokKru(kru: { nama: string; peran: string }[] = []) {
-  const pola = /\s*\(\s*hono?u?rable\s+mention\s*\)\s*/i;
+  const pola = /\s*\(\s*hon[a-z]*rable\s+mention\s*\)\s*/i; // toleran salah ketik "Honarable"
   const utama: typeof kru = [];
   const hormat: typeof kru = [];
   for (const k of kru) {

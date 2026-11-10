@@ -96,7 +96,7 @@ export default async function ProgramPage({ params }: { params: { slug: string }
     <>
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-4 sm:px-8">
-        <Link href={`/genre/${genreSlug}`} className="inline-flex items-center gap-1.5 text-sm text-white/50 hover:text-white">
+        <Link href={`/genre/${genreSlug}`} className="inline-flex items-center gap-1.5 text-sm text-redup hover:text-navy">
           <ArrowLeft size={15} /> {program.kategori}
         </Link>
 
@@ -115,7 +115,7 @@ export default async function ProgramPage({ params }: { params: { slug: string }
         {/* Insight angka dari YouTube (spreadsheet) */}
         {angka && (
           <section className="mt-24">
-            <p className="text-[11px] uppercase tracking-[0.3em] text-gold-400">Insight</p>
+            <p className="text-[11px] uppercase tracking-[0.3em] text-bata">Insight</p>
             <h2 className="mt-2 font-display text-3xl">Performa program</h2>
             <div className="mt-6">
               <Statistik
@@ -132,13 +132,13 @@ export default async function ProgramPage({ params }: { params: { slug: string }
                 href={angka.top.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 flex items-center justify-between gap-4 rounded-2xl bg-ink-900 p-5 ring-1 ring-white/10 hover:ring-gold-400/40"
+                className="mt-4 flex items-center justify-between gap-4 rounded-2xl bg-white p-5 ring-1 ring-navy/10 hover:ring-bata/40"
               >
                 <span className="min-w-0">
-                  <span className="block text-[11px] uppercase tracking-[0.2em] text-white/50">Episode terpopuler</span>
-                  <span className="mt-1 block truncate text-white">{angka.top.judul}</span>
+                  <span className="block text-[11px] uppercase tracking-[0.2em] text-redup">Episode terpopuler</span>
+                  <span className="mt-1 block truncate text-navy">{angka.top.judul}</span>
                 </span>
-                <span className="shrink-0 font-mono text-sm text-gold-400">{singkat(angka.top.views)} views</span>
+                <span className="shrink-0 font-mono text-sm text-bata">{singkat(angka.top.views)} views</span>
               </a>
             )}
           </section>
@@ -147,14 +147,14 @@ export default async function ProgramPage({ params }: { params: { slug: string }
         {/* 5W2H */}
         {limaW.length >= 3 && (
           <section className="mt-24">
-            <p className="text-[11px] uppercase tracking-[0.3em] text-gold-400">5W2H</p>
+            <p className="text-[11px] uppercase tracking-[0.3em] text-bata">5W2H</p>
             <h2 className="mt-2 font-display text-3xl">Program ini dalam satu layar</h2>
-            <div className="mt-6 grid gap-px overflow-hidden rounded-2xl bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-6 grid gap-px overflow-hidden rounded-2xl bg-navy/10 sm:grid-cols-2 lg:grid-cols-4">
               {limaW.map((w, i) => (
-                <Muncul key={w.kunci} jeda={i * 60} className="bg-ink-900 p-5">
-                  <p className="font-mono text-xs text-gold-400">{w.kunci}</p>
-                  <p className="mt-1 text-xs text-white/40">{w.judul}</p>
-                  <p className="mt-3 whitespace-pre-line text-white/90">{w.isi}</p>
+                <Muncul key={w.kunci} jeda={i * 60} className="bg-white p-5">
+                  <p className="font-mono text-xs text-bata">{w.kunci}</p>
+                  <p className="mt-1 text-xs text-redup">{w.judul}</p>
+                  <p className="mt-3 whitespace-pre-line text-navy/80">{w.isi}</p>
                 </Muncul>
               ))}
             </div>
@@ -164,12 +164,12 @@ export default async function ProgramPage({ params }: { params: { slug: string }
         {/* 3. Detail */}
         <section className="mt-24 grid gap-10 md:grid-cols-[1fr_260px]">
           <Muncul>
-            <p className="text-[11px] uppercase tracking-[0.3em] text-gold-400">Tentang program</p>
-            <div className="mt-4 whitespace-pre-line text-lg leading-relaxed text-white/80">
+            <p className="text-[11px] uppercase tracking-[0.3em] text-bata">Tentang program</p>
+            <div className="mt-4 whitespace-pre-line text-lg leading-relaxed text-navy/80">
               {program.deskripsi || program.ringkasan || "Deskripsi program segera hadir."}
             </div>
             {trailer && (
-              <div className="mt-8 aspect-video overflow-hidden rounded-2xl bg-ink-800">
+              <div className="mt-8 aspect-video overflow-hidden rounded-2xl bg-pasir-50">
                 <iframe
                   src={trailer}
                   title={program.judul}
@@ -181,11 +181,11 @@ export default async function ProgramPage({ params }: { params: { slug: string }
             )}
           </Muncul>
           <Muncul jeda={120}>
-            <dl className="space-y-4 rounded-2xl bg-ink-900 p-5 text-sm ring-1 ring-white/10">
+            <dl className="space-y-4 rounded-2xl bg-white p-5 text-sm ring-1 ring-navy/10">
               {info.map((i) => (
                 <div key={i.label}>
-                  <dt className="text-white/40">{i.label}</dt>
-                  <dd className="mt-0.5 text-white">{i.nilai}</dd>
+                  <dt className="text-redup">{i.label}</dt>
+                  <dd className="mt-0.5 text-navy">{i.nilai}</dd>
                 </div>
               ))}
             </dl>
@@ -194,7 +194,7 @@ export default async function ProgramPage({ params }: { params: { slug: string }
 
         {episode.length > 0 && (
           <section className="mt-16">
-            <h2 className="text-[11px] uppercase tracking-[0.3em] text-white/50">Episode terbaru</h2>
+            <h2 className="text-[11px] uppercase tracking-[0.3em] text-redup">Episode terbaru</h2>
             <div className="-mx-4 mt-5 flex snap-x scroll-px-4 gap-4 overflow-x-auto px-4 pb-4 sm:mx-0 sm:px-0">
               {episode.slice(0, 12).map((e, i) => {
                 const thumb = thumbnailYoutube(e.link_tayang);
@@ -205,21 +205,21 @@ export default async function ProgramPage({ params }: { params: { slug: string }
                     {...(e.link_tayang ? { href: e.link_tayang, target: "_blank", rel: "noopener noreferrer" } : {})}
                     className="group w-60 shrink-0 snap-start"
                   >
-                    <div className="relative aspect-video overflow-hidden rounded-xl bg-ink-800">
+                    <div className="relative aspect-video overflow-hidden rounded-xl bg-pasir-50">
                       {thumb ? (
                         <img src={thumb} alt="" loading="lazy" className="h-full w-full object-cover transition group-hover:scale-105" />
                       ) : (
-                        <div className="flex h-full items-center justify-center font-mono text-sm text-white/30">{e.episode ?? "EP"}</div>
+                        <div className="flex h-full items-center justify-center font-mono text-sm text-redup/70">{e.episode ?? "EP"}</div>
                       )}
                       {e.link_tayang && (
-                        <span className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink-950">
+                        <span className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-navy">
                           <Play size={12} fill="currentColor" />
                         </span>
                       )}
                     </div>
-                    {e.episode && <p className="mt-2 font-mono text-xs text-gold-400">{e.episode}</p>}
-                    <p className="mt-0.5 line-clamp-2 text-sm text-white group-hover:text-gold-400">{e.judul}</p>
-                    <p className="mt-0.5 text-xs text-white/40">
+                    {e.episode && <p className="mt-2 font-mono text-xs text-bata">{e.episode}</p>}
+                    <p className="mt-0.5 line-clamp-2 text-sm text-navy group-hover:text-bata">{e.judul}</p>
+                    <p className="mt-0.5 text-xs text-redup">
                       {[formatTanggal(e.tanggal), e.platform].filter(Boolean).join(" · ")}
                     </p>
                   </Tag>
@@ -232,24 +232,24 @@ export default async function ProgramPage({ params }: { params: { slug: string }
         {/* Kru / credit */}
         {kru.utama.length + kru.hormat.length > 0 && (
           <section className="mt-16">
-            <p className="text-[11px] uppercase tracking-[0.3em] text-gold-400">Di balik layar</p>
+            <p className="text-[11px] uppercase tracking-[0.3em] text-bata">Di balik layar</p>
             <h2 className="mt-2 font-display text-3xl">Kru</h2>
             <dl className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
               {kru.utama.map((k, i) => (
-                <Muncul key={`${k.nama}-${i}`} jeda={i * 40} className="border-l-2 border-gold-400/60 pl-4">
-                  <dt className="text-xs uppercase tracking-[0.15em] text-white/50">{k.peran || "Kru"}</dt>
-                  <dd className="mt-1 font-display text-lg text-white">{k.nama}</dd>
+                <Muncul key={`${k.nama}-${i}`} jeda={i * 40} className="border-l-2 border-bata/70 pl-4">
+                  <dt className="text-xs uppercase tracking-[0.15em] text-redup">{k.peran || "Kru"}</dt>
+                  <dd className="mt-1 font-display text-lg text-navy">{k.nama}</dd>
                 </Muncul>
               ))}
             </dl>
             {kru.hormat.length > 0 && (
               <div className="mt-10">
-                <h3 className="text-[11px] uppercase tracking-[0.3em] text-white/50">Honorable mention</h3>
+                <h3 className="text-[11px] uppercase tracking-[0.3em] text-redup">Honorable mention</h3>
                 <dl className="mt-4 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
                   {kru.hormat.map((k, i) => (
-                    <div key={`${k.nama}-${i}`} className="border-l-2 border-white/15 pl-4">
-                      <dt className="text-xs uppercase tracking-[0.15em] text-white/40">{k.peran || "Kru"}</dt>
-                      <dd className="mt-1 text-white/80">{k.nama}</dd>
+                    <div key={`${k.nama}-${i}`} className="border-l-2 border-navy/10 pl-4">
+                      <dt className="text-xs uppercase tracking-[0.15em] text-redup">{k.peran || "Kru"}</dt>
+                      <dd className="mt-1 text-navy/80">{k.nama}</dd>
                     </div>
                   ))}
                 </dl>
@@ -261,7 +261,7 @@ export default async function ProgramPage({ params }: { params: { slug: string }
         {/* 4. Link ke program */}
         {kanal.some((k) => k.link) && (
           <section className="mt-16">
-            <h2 className="text-[11px] uppercase tracking-[0.3em] text-white/50">Tonton di</h2>
+            <h2 className="text-[11px] uppercase tracking-[0.3em] text-redup">Tonton di</h2>
             <div className="mt-5">
               <KanalLinks kanal={kanal} besar />
             </div>

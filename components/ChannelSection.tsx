@@ -10,9 +10,9 @@ export default function ChannelSection({ insight }: { insight: Insight }) {
   const j = jangkauan(insight.channel);
   return (
     <section id="channel" className="scroll-mt-4 pt-20">
-      <p className="text-[11px] uppercase tracking-[0.3em] text-gold-400">Jangkauan</p>
+      <p className="text-[11px] uppercase tracking-[0.3em] text-bata">Jangkauan</p>
       <h2 className="mt-2 font-display text-3xl sm:text-4xl">Channel yang kami kelola</h2>
-      <p className="mt-2 text-sm text-white/50">
+      <p className="mt-2 text-sm text-redup">
         Diperbarui otomatis. Data per {formatTanggal(insight.diperbarui.slice(0, 10))}.
       </p>
       <div className="mt-8">

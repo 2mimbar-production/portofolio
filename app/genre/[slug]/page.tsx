@@ -28,15 +28,15 @@ export default async function GenrePage({ params }: { params: { slug: string } }
     <>
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-4 sm:px-8">
-        <Link href="/#genre" className="inline-flex items-center gap-1.5 text-sm text-white/50 hover:text-white">
+        <Link href="/#genre" className="inline-flex items-center gap-1.5 text-sm text-redup hover:text-navy">
           <ArrowLeft size={15} /> Semua genre
         </Link>
         <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.3em] text-gold-400">Genre</p>
+            <p className="text-[11px] uppercase tracking-[0.3em] text-bata">Genre</p>
             <h1 className="mt-2 font-display text-4xl sm:text-6xl">{genre.nama}</h1>
           </div>
-          <p className="font-mono text-sm text-white/50">{genre.program.length} program</p>
+          <p className="font-mono text-sm text-redup">{genre.program.length} program</p>
         </div>
 
         {semua.length > 1 && (
@@ -46,7 +46,7 @@ export default async function GenrePage({ params }: { params: { slug: string } }
                 key={g.slug}
                 href={`/genre/${g.slug}`}
                 className={`shrink-0 rounded-full px-4 py-1.5 text-sm ${
-                  g.slug === genre.slug ? "bg-white text-ink-950" : "bg-white/5 text-white/70 ring-1 ring-white/15 hover:text-white"
+                  g.slug === genre.slug ? "bg-navy text-white" : "bg-white text-navy/80 ring-1 ring-navy/10 hover:ring-navy/30"
                 }`}
               >
                 {g.nama}

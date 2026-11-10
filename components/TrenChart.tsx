@@ -24,7 +24,7 @@ export default function TrenChart({
 
   if (titik.length < 2) {
     return mini ? null : (
-      <p className="rounded-xl bg-ink-900 p-6 text-center text-sm text-white/40">
+      <p className="rounded-xl bg-pasir-50 p-6 text-center text-sm text-redup">
         Grafik muncul setelah data terkumpul beberapa hari.
       </p>
     );
@@ -65,28 +65,28 @@ export default function TrenChart({
       >
         <defs>
           <linearGradient id="isi-tren" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="#D9A566" stopOpacity="0.25" />
-            <stop offset="1" stopColor="#D9A566" stopOpacity="0" />
+            <stop offset="0" stopColor="#275996" stopOpacity="0.25" />
+            <stop offset="1" stopColor="#275996" stopOpacity="0" />
           </linearGradient>
         </defs>
-        {!mini && <line x1={0} x2={L} y1={H - pad} y2={H - pad} stroke="rgba(255,255,255,0.1)" strokeWidth={1} vectorEffect="non-scaling-stroke" />}
+        {!mini && <line x1={0} x2={L} y1={H - pad} y2={H - pad} stroke="rgba(8,39,86,0.12)" strokeWidth={1} vectorEffect="non-scaling-stroke" />}
         <path d={area} fill="url(#isi-tren)" />
-        <path d={garis} fill="none" stroke="#D9A566" strokeWidth={2} vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
+        <path d={garis} fill="none" stroke="#275996" strokeWidth={2} vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
         {a && aktif !== null && (
-          <line x1={x(aktif)} x2={x(aktif)} y1={0} y2={H} stroke="rgba(255,255,255,0.35)" strokeWidth={1} vectorEffect="non-scaling-stroke" />
+          <line x1={x(aktif)} x2={x(aktif)} y1={0} y2={H} stroke="rgba(8,39,86,0.35)" strokeWidth={1} vectorEffect="non-scaling-stroke" />
         )}
       </svg>
       {a && aktif !== null && (
         <div
-          className="pointer-events-none absolute top-0 -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink-700 px-2.5 py-1.5 text-xs shadow-lg ring-1 ring-white/10"
+          className="pointer-events-none absolute top-0 -translate-x-1/2 whitespace-nowrap rounded-lg bg-navy px-2.5 py-1.5 text-xs shadow-lg "
           style={{ left: `${(x(aktif) / L) * 100}%` }}
         >
           <span className="block font-mono font-semibold text-white">{a.nilai.toLocaleString("id-ID")}</span>
-          <span className="block text-white/50">{a.tanggal}</span>
+          <span className="block text-white/70">{a.tanggal}</span>
         </div>
       )}
       {!mini && (
-        <figcaption className="mt-2 flex justify-between text-[11px] text-white/40">
+        <figcaption className="mt-2 flex justify-between text-[11px] text-redup">
           <span>{titik[0].tanggal}</span>
           <span>{titik[titik.length - 1].tanggal}</span>
         </figcaption>

@@ -5,35 +5,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Denim blue — dikalibrasi persis dari warna logo Duamimbar (#1A2E95)
-        denim: {
-          50: "#F1F2F9",
-          100: "#DDE0EF",
-          300: "#98A1CF",
-          500: "#4858AA", // primary interaktif
-          700: "#1A2E95", // primary utama (header, tombol) — sama persis dengan logo
-          900: "#13205F", // teks utama
-        },
-        // Aksen hangat — supaya tidak terasa robotic/kaku
-        gold: {
-          400: "#D9A566",
-          500: "#C68F4A",
-        },
-        // Latar gelap etalase: biru tinta dari warna logo, digelapkan
-        ink: {
-          950: "#070A17",
-          900: "#0C1124",
-          800: "#141B36",
-          700: "#222B4D",
-        },
-        surface: "#F6F8FA",
-        muted: "#6B7A8D",
+        // Palet etalase (dari moodboard): navy, bata, kobalt, langit, pasir.
+        navy: { DEFAULT: "#082756", 700: "#163A72" },
+        bata: { DEFAULT: "#B65243", 600: "#9C4234", 50: "#FBEDEA" },
+        kobalt: { DEFAULT: "#275996", 50: "#EAF1FA" },
+        langit: { DEFAULT: "#6FA2E3", 100: "#DCE9F8", 50: "#EFF5FC" },
+        pasir: { DEFAULT: "#CCBAAC", 100: "#EFE7E0", 50: "#F7F2EC" },
+        kanvas: "#FCF9F5",
+        redup: "#5A6984",
       },
       fontFamily: {
         // Satu keluarga font — Inter — di semua tempat. Beda "display" / "sans"
         // / "mono" sekarang cuma beda gaya (weight, tracking), bukan beda
         // typeface. Lihat .font-display & .font-mono di globals.css.
-        display: ["var(--font-inter)", "sans-serif"],
+        display: ["var(--font-display)", "var(--font-inter)", "sans-serif"],
         sans: ["var(--font-inter)", "sans-serif"],
         mono: ["var(--font-inter)", "sans-serif"],
       },

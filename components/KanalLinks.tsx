@@ -15,17 +15,17 @@ export default function KanalLinks({ kanal, besar = false }: { kanal: Kanal[]; b
           rel="noopener noreferrer"
           className={
             besar
-              ? "group flex items-center justify-between rounded-2xl bg-ink-800 p-5 ring-1 ring-white/10 transition hover:bg-ink-700 hover:ring-gold-400/50"
-              : "inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-sm text-white ring-1 ring-white/20 backdrop-blur hover:bg-white/20"
+              ? "group flex items-center justify-between rounded-2xl bg-pasir-50 p-5 ring-1 ring-navy/10 transition hover:bg-pasir-100 hover:ring-bata/40"
+              : "inline-flex items-center gap-1.5 rounded-full bg-navy/10 px-3.5 py-1.5 text-sm text-navy ring-1 ring-navy/10 backdrop-blur hover:bg-white/20"
           }
         >
           {besar ? (
             <>
               <span>
-                <span className="block text-xs uppercase tracking-[0.2em] text-white/50">{k.platform}</span>
-                <span className="mt-1 block font-display text-lg text-white">{k.nama || "Kunjungi kanal"}</span>
+                <span className="block text-xs uppercase tracking-[0.2em] text-redup">{k.platform}</span>
+                <span className="mt-1 block font-display text-lg text-navy">{k.nama || "Kunjungi kanal"}</span>
               </span>
-              <ArrowUpRight className="text-white/50 transition group-hover:text-gold-400" />
+              <ArrowUpRight className="text-redup transition group-hover:text-bata" />
             </>
           ) : (
             <>
