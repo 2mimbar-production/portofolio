@@ -2,7 +2,10 @@ import type { LabelPersen } from "@/lib/insight";
 
 /** Bar horizontal persen, nilai ditulis langsung di tiap baris. */
 export default function BarPersen({ judul, data }: { judul: string; data: LabelPersen[] }) {
-  const ada = data.filter((d) => d.persen !== null && d.persen > 0);
+  // "65-" dari YouTube Analytics berarti 65 tahun ke atas.
+  const ada = data
+    .filter((d) => d.persen !== null && d.persen > 0)
+    .map((d) => ({ ...d, label: d.label.replace(/^(\d+)-$/, "$1+").replace("-", "–") }));
   if (!ada.length) return null;
   const max = Math.max(...ada.map((d) => d.persen ?? 0));
   return (
