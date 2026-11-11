@@ -4,6 +4,8 @@
 
 :root {
   --font-inter: "Inter";
+  /* Font judul (dari @fontsource-variable/bricolage-grotesque). */
+  --font-display: "Bricolage Grotesque Variable";
 }
 
 * {
